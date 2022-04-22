@@ -1,6 +1,7 @@
 package com.example.readingisgood.filter;
 
 import com.example.readingisgood.factory.UserAuthenticationFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,6 +21,7 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         SecurityContextHolder.getContext().setAuthentication(
                 userAuthenticationFactory.getAuthentication(request)
         );

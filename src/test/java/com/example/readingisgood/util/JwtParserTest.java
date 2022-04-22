@@ -1,4 +1,4 @@
-package com.example.readingisgood.service.auth;
+package com.example.readingisgood.util;
 
 import io.jsonwebtoken.IncorrectClaimException;
 import io.jsonwebtoken.MissingClaimException;
