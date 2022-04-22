@@ -11,11 +11,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthFilter extends OncePerRequestFilter {
+
+    private UserAuthenticationFactory userAuthenticationFactory;
+
+    public AuthFilter(UserAuthenticationFactory userAuthenticationFactory) {
+        this.userAuthenticationFactory = userAuthenticationFactory;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         SecurityContextHolder.getContext().setAuthentication(
-                UserAuthenticationFactory.getAuthentication(request)
+                userAuthenticationFactory.getAuthentication(request)
         );
         filterChain.doFilter(request, response);
     }
