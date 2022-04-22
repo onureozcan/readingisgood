@@ -40,8 +40,6 @@ public class UserAuthenticationFactory {
                 throw new InvalidAuthenticationException(exception);
             }
         }
-        return new CustomAuthentication(
-                "0", "visitor", "visitor", List.of()
-        );
+        return null;
     }
 }

@@ -23,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Appl
                 .accessDeniedHandler(new AccessDeniedHandlerImpl())
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/public/**").permitAll()
                 .antMatchers("/api/**")
                 .authenticated()
                 .and()
