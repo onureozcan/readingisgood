@@ -11,8 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthFilter extends OncePerRequestFilter {
-
-    private UserAuthenticationFactory userAuthenticationFactory;
+    private final UserAuthenticationFactory userAuthenticationFactory;
 
     public AuthFilter(UserAuthenticationFactory userAuthenticationFactory) {
         this.userAuthenticationFactory = userAuthenticationFactory;
