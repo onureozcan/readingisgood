@@ -8,7 +8,7 @@ public class AuthenticationPayload {
     private String id;
     private String name;
     private String email;
-    private List<Role> roles;
+    private List<Role> roles = List.of();
 
     public String getId() {
         return id;
