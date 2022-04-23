@@ -3,7 +3,6 @@ package com.example.readingisgood.dto.response;
 public class AuthenticationResponse {
 
     private String token;
-
     public AuthenticationResponse(String token) {
         this.token = token;
     }

@@ -1,7 +1,7 @@
 package com.example.readingisgood.factory;
 
 import com.example.readingisgood.pojo.auth.AuthenticationPayload;
-import com.example.readingisgood.exception.InvalidAuthenticationException;
+import com.example.readingisgood.exception.InvalidAuthenticationPayloadException;
 import com.example.readingisgood.mapper.AuthenticationMapper;
 import com.example.readingisgood.pojo.auth.CustomAuthentication;
 import com.example.readingisgood.util.JwtParser;
@@ -37,7 +37,7 @@ public class UserAuthenticationFactory {
                 AuthenticationPayload authenticationPayload = objectMapper.readValue(payload, AuthenticationPayload.class);
                 return authenticationMapper.toAuthentication(authenticationPayload);
             } catch (JsonProcessingException exception) {
-                throw new InvalidAuthenticationException(exception);
+                throw new InvalidAuthenticationPayloadException(exception);
             }
         }
         return new CustomAuthentication(
