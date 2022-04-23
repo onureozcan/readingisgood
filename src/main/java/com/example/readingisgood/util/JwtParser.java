@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import static com.example.readingisgood.constant.JwtConstants.ISSUER;
+import static com.example.readingisgood.constant.JwtConstants.KEY;
+
 @Component
 public class JwtParser {
-    private static final String KEY = "secret";
-    private static final String ISSUER = "reading-is-good";
-
     public String getPayload(String token) {
         return Jwts.parser()
-                .setSigningKey(Base64.getEncoder().encode(KEY.getBytes(StandardCharsets.UTF_8)))
+                .setSigningKey(KEY)
                 .requireIssuer(ISSUER)
                 .parse(token)
                 .getBody()
