@@ -1,6 +1,7 @@
 package com.example.readingisgood.controller;
 
 import com.example.readingisgood.dto.request.AuthenticationRequest;
+import com.example.readingisgood.dto.response.AuthenticationResponse;
 import com.example.readingisgood.service.auth.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,7 @@ public class AuthController {
     private AuthenticationService authenticationService;
 
     @PostMapping
-    public void authenticate(AuthenticationRequest request) {
-        authenticationService.authenticate(request);
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        return authenticationService.authenticate(request);
     }
 }
