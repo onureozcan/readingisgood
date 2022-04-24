@@ -12,6 +12,7 @@ public class Order {
 
     private OrderStatus status;
     private int count;
+    private double totalPaid;
 
     private Instant createdAt;
     private Instant updatedAt;
@@ -30,6 +31,14 @@ public class Order {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public double getTotalPaid() {
+        return totalPaid;
+    }
+
+    public void setTotalPaid(double totalPaid) {
+        this.totalPaid = totalPaid;
     }
 
     public OrderStatus getStatus() {
