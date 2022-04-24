@@ -4,7 +4,8 @@ import java.time.Instant;
 
 public class User {
 
-    private String email; // as id
+    private String id;
+    private String email;
     private String name;
     private String passwordHashed;
     private String passwordSalt;
@@ -17,10 +18,19 @@ public class User {
     public User() {
     }
 
-    public User(String email, String name, String role) {
+    public User(String id, String email, String name, String role) {
+        this.id = id;
         this.email = email;
         this.name = name;
         this.role = role;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEmail() {

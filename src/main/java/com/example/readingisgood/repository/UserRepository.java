@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserRepository {
 
-    public User findUserByName(String name) {
+    public User findUserById(String name) {
         // TODO
         return null;
     }

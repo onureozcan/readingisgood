@@ -20,7 +20,6 @@ public class JwtGeneratorTest {
         String jwt = jwtGenerator.generateJwt(
                 new AuthenticationPayload()
         );
-
         jwtParser.getPayload(jwt);
     }
 }

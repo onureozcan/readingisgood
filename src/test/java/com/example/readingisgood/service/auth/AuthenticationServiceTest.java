@@ -35,11 +35,11 @@ public class AuthenticationServiceTest {
 
     @BeforeEach
     public void before() {
-        mockUser = new User("test@user.com", "name", Role.CUSTOMER.name());
+        mockUser = new User("1", "test@user.com", "name", Role.CUSTOMER.name());
         mockUser.setPasswordSalt("salt");
         mockUser.setPasswordHashed("passwordHashed");
 
-        Mockito.when(userRepository.findUserByName(eq(mockUser.getName())))
+        Mockito.when(userRepository.findUserById(eq(mockUser.getName())))
                 .thenReturn(mockUser);
 
         Mockito.when(passwordUtil.hash(eq("salt"), not(eq("some password"))))
@@ -53,7 +53,7 @@ public class AuthenticationServiceTest {
     public void shouldAuthenticateUser() {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPassword("some password");
-        request.setUserName(mockUser.getName());
+        request.setEmail(mockUser.getName());
 
         AuthenticationResponse response = authenticationService.authenticate(
                 request
@@ -68,7 +68,7 @@ public class AuthenticationServiceTest {
     public void shouldFailToAuthenticateUserIfNotFound() {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPassword("some password");
-        request.setUserName("some nonesense user");
+        request.setEmail("some nonesense user");
 
         Assertions.assertThrows(
                 InvalidCredentialsException.class, () -> authenticationService.authenticate(request)
@@ -79,7 +79,7 @@ public class AuthenticationServiceTest {
     public void shouldFailToAuthenticateUserWithInvalidPassword() {
         AuthenticationRequest request = new AuthenticationRequest();
         request.setPassword("wrong password");
-        request.setUserName(mockUser.getName());
+        request.setEmail(mockUser.getName());
 
         Assertions.assertThrows(
                 InvalidCredentialsException.class, () -> authenticationService.authenticate(request)
