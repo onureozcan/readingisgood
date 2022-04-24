@@ -108,7 +108,7 @@ public class BookServiceTest {
     }
 
     @Test
-    public void shouldUpdateStock() {
+    public void shouldUpdateStock() throws NegativeStockException {
         bookService.handleStockUpdate(
                 new StockUpdateRequest(testBook.getId(), 100)
         );

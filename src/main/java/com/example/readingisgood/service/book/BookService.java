@@ -55,7 +55,7 @@ public class BookService {
         }
     }
 
-    public void handleStockUpdate(StockUpdateRequest request) {
+    public void handleStockUpdate(StockUpdateRequest request) throws NegativeStockException {
         Optional<Book> bookOptional = bookRepository.findById(request.getIsbn());
         if (bookOptional.isEmpty()) {
             throw new NoSuchBookException(request.getIsbn());
