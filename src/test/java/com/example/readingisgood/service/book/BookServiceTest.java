@@ -1,6 +1,8 @@
 package com.example.readingisgood.service.book;
 
+import com.example.readingisgood.dto.request.CreateBookRequest;
 import com.example.readingisgood.dto.request.StockUpdateRequest;
+import com.example.readingisgood.exception.BookAlreadyPresentException;
 import com.example.readingisgood.exception.NegativeStockException;
 import com.example.readingisgood.exception.NoSuchBookException;
 import com.example.readingisgood.model.Book;
@@ -19,8 +21,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -45,6 +46,37 @@ public class BookServiceTest {
         when(bookRepository.findById("some isbn")).thenReturn(
                 Optional.of(testBook)
         );
+    }
+
+    @Test
+    public void shouldCreateBook() {
+        when(bookRepository.findById(testBook.getId())).thenReturn(
+                Optional.empty()
+        );
+
+        CreateBookRequest request = getCreateRequest();
+        bookService.createBook(request);
+
+        ArgumentCaptor<Book> argumentCaptor = ArgumentCaptor.forClass(Book.class);
+        verify(bookRepository, times(1)).save(argumentCaptor.capture());
+
+        assertBook(request, argumentCaptor.getValue());
+    }
+
+    @Test
+    public void shouldFailToCreateBookIfPresent() {
+        CreateBookRequest request = getCreateRequest();
+
+        assertThrows(BookAlreadyPresentException.class, ()-> bookService.createBook(request));
+    }
+
+    private CreateBookRequest getCreateRequest() {
+        CreateBookRequest request = new CreateBookRequest();
+        request.setAuthor("test author");
+        request.setName("test book");
+        request.setIsbn("some isbn");
+        request.setPublishDate(Instant.now().minus(Duration.ofDays(822)));
+        return request;
     }
 
     @Test
@@ -106,4 +138,13 @@ public class BookServiceTest {
         return testBook;
     }
 
+    private void assertBook(CreateBookRequest expected, Book found) {
+        assertAll(
+                () -> assertEquals(expected.getName(), found.getName()),
+                () -> assertEquals(expected.getIsbn(), found.getId()),
+                () -> assertEquals(expected.getAuthor(), found.getAuthor()),
+                () -> assertEquals(expected.getPublishDate(), found.getPublishedAt()),
+                () -> assertEquals(0, found.getCount())
+        );
+    }
 }
