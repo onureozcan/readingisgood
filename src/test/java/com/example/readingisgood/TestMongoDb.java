@@ -16,7 +16,7 @@ public class TestMongoDb {
 
     public static void start() throws IOException {
         String ip = "localhost";
-        int port = 27017;
+        int port = 27018;
 
         ImmutableMongodConfig mongodConfig = MongodConfig
                 .builder()

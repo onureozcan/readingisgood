@@ -1,6 +1,6 @@
 package com.example.readingisgood.repository;
 
-import com.example.readingisgood.model.User;
+import com.example.readingisgood.model.Book;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.Document;
@@ -15,9 +15,9 @@ import java.time.Instant;
 import java.util.Optional;
 
 @Repository
-public class UserRepository {
+public class BookRepository {
 
-    private static final String COLLECTION = "user";
+    private static final String COLLECTION = "book";
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -25,9 +25,9 @@ public class UserRepository {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public Optional<User> findUserById(String id) {
+    public Optional<Book> findByName(String name) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("_id").is(id));
+        query.addCriteria(Criteria.where("name").is(name));
 
         Optional<Document> documentOptional = mongoTemplate.find(query, Document.class, COLLECTION)
                 .stream().findFirst();
@@ -40,34 +40,34 @@ public class UserRepository {
         document.put("id", document.get("_id"));
 
         try {
-            return Optional.of(objectMapper.readValue(document.toJson(), User.class));
+            return Optional.of(objectMapper.readValue(document.toJson(), Book.class));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Upsert a user
-     *
-     * @param user user to be saved. note that it will be modified
-     * @return updated user entity
-     */
-    public User save(User user) {
+    public Book save(Book book) {
         Instant updatedAt = Instant.now();
-        user.setUpdatedAt(updatedAt);
-        user.setCreatedAt(user.getCreatedAt() == null ? updatedAt : user.getCreatedAt());
+        book.setUpdatedAt(updatedAt);
+        book.setCreatedAt(book.getCreatedAt() == null ? updatedAt : book.getCreatedAt());
 
         Query query = new Query();
-        query.addCriteria(Criteria.where("_id").is(user.getId()));
-
+        query.addCriteria(Criteria.where("_id").is(book.getId()));
 
         Update update = new Update();
-        objectMapper.valueToTree(user).fields()
-                .forEachRemaining(e -> update.set(e.getKey(), e.getValue().textValue()));
+        objectMapper.valueToTree(book).fields()
+                .forEachRemaining(e -> {
+                    String key = e.getKey();
+                    if (e.getValue().isNumber()){
+                        update.set(key, e.getValue().numberValue());
+                    } else {
+                        update.set(key, e.getValue().textValue());
+                    }
+                });
 
-        update.set("_id", user.getId());
-        mongoTemplate.upsert(query, update, User.class, COLLECTION);
+        update.set("_id", book.getId());
+        mongoTemplate.upsert(query, update, Book.class, COLLECTION);
 
-        return user;
+        return book;
     }
 }
