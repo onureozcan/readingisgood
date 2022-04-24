@@ -10,6 +10,8 @@ public class Order {
     private String userId;
     private String bookId;
 
+    private Book book;
+
     private OrderStatus status;
     private int count;
     private double totalPaid;
@@ -35,6 +37,14 @@ public class Order {
 
     public double getTotalPaid() {
         return totalPaid;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     public void setTotalPaid(double totalPaid) {

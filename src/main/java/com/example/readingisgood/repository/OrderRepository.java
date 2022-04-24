@@ -1,6 +1,7 @@
 package com.example.readingisgood.repository;
 
 import com.example.readingisgood.dto.response.OrderAggregationResult;
+import com.example.readingisgood.model.Book;
 import com.example.readingisgood.model.Order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -131,10 +132,16 @@ public class OrderRepository {
                     String key = e.getKey();
                     if (e.getValue().isNumber()) {
                         update.set(key, e.getValue().numberValue());
-                    } else {
+                    } else if (!e.getValue().isObject()) { // will set objects manually
                         update.set(key, e.getValue().textValue());
                     }
                 });
+
+        try {
+            update.set("_book", objectMapper.writeValueAsString(order.getBook()));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         // will be used to aggregate
         update.set("yearAndMonth", formatter.format(order.getCreatedAt()));
@@ -152,7 +159,9 @@ public class OrderRepository {
 
     private Order getOrder(Document it) {
         try {
-            return objectMapper.readValue(it.toJson(), Order.class);
+            Order order = objectMapper.readValue(it.toJson(), Order.class);
+            order.setBook(objectMapper.readValue(it.get("_book").toString(), Book.class));
+            return order;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

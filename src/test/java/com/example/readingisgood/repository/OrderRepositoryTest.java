@@ -3,6 +3,7 @@ package com.example.readingisgood.repository;
 import com.example.readingisgood.TestMongoDb;
 import com.example.readingisgood.dto.response.OrderAggregationResult;
 import com.example.readingisgood.enums.OrderStatus;
+import com.example.readingisgood.model.Book;
 import com.example.readingisgood.model.Order;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,13 +26,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles(profiles = "test")
 public class OrderRepositoryTest {
 
-    public static final Instant NOW = Instant.parse("2021-06-05T00:00:00.000Z");
+    private static final Instant NOW = Instant.parse("2021-06-05T00:00:00.000Z");
+    private static final Book BOOK = new Book();
 
     @Autowired
     private OrderRepository orderRepository;
 
     @BeforeAll
     public static void beforeAll() throws IOException {
+        BOOK.setId("book_1");
+        BOOK.setPrice(12.5);
         TestMongoDb.start();
     }
 
@@ -53,6 +57,19 @@ public class OrderRepositoryTest {
         Order found = orderRepository.findOrderById(order.getId()).orElseThrow();
         assertOrder(order, found);
     }
+
+    @Test
+    public void testUpdateOrderStatus() {
+        Order order = getTestOrder(null, null);
+        order = orderRepository.save(order);
+
+        order.setStatus(OrderStatus.REJECTED);
+        order = orderRepository.save(order);
+
+        Order found = orderRepository.findOrderById(order.getId()).orElseThrow();
+        assertOrder(order, found);
+    }
+
 
     @Test
     public void testMonthlyStats() {
@@ -121,7 +138,8 @@ public class OrderRepositoryTest {
         Order order = new Order();
         order.setStatus(OrderStatus.PLACED);
         order.setCount(2);
-        order.setBookId("book_1");
+        order.setBookId(BOOK.getId());
+        order.setBook(BOOK);
         order.setTotalPaid(10.0);
         order.setUserId(userId == null ? "user@user.com" : userId);
         order.setCreatedAt(createdAt);
@@ -134,6 +152,7 @@ public class OrderRepositoryTest {
                 () -> assertEquals(order.getId(), found.getId()),
                 () -> assertEquals(order.getBookId(), found.getBookId()),
                 () -> assertEquals(order.getStatus(), found.getStatus()),
+                () -> assertEquals(order.getBook().getId(), found.getBook().getId()),
                 () -> assertEquals(order.getUserId(), found.getUserId()),
                 () -> assertEquals(order.getCount(), found.getCount())
         );
