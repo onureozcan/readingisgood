@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -29,8 +30,9 @@ public class AuthenticationService {
     private AuthenticationMapper authenticationMapper;
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        User user = userRepository.findUserById(authenticationRequest.getEmail());
-        if (user != null) {
+        Optional<User> userOptional = userRepository.findUserById(authenticationRequest.getEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
             String hashedPassword = passwordUtil.hash(user.getPasswordSalt(), authenticationRequest.getPassword());
             String expectedHashedPassword = user.getPasswordHashed();
 
@@ -39,7 +41,7 @@ public class AuthenticationService {
                         authenticationMapper.toPayload(user)
                 ));
             } else {
-                user.setLastFailedLogin(Instant.now());
+                user.setLastFailedLoginAt(Instant.now());
                 userRepository.save(user);
             }
         }

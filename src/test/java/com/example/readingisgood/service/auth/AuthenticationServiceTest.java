@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.ArgumentMatchers.eq;
@@ -42,7 +44,7 @@ public class AuthenticationServiceTest {
         mockUser.setPasswordHashed("passwordHashed");
 
         Mockito.when(userRepository.findUserById(eq(mockUser.getName())))
-                .thenReturn(mockUser);
+                .thenReturn(Optional.of(mockUser));
 
         Mockito.when(passwordUtil.hash(eq("salt"), not(eq("some password"))))
                 .thenReturn("someOtherPasswordHashed");
@@ -90,6 +92,6 @@ public class AuthenticationServiceTest {
         ArgumentCaptor<User> argumentCaptor = ArgumentCaptor.forClass(User.class);
         Mockito.verify(userRepository, times(1)).save(argumentCaptor.capture());
 
-        Assertions.assertNotNull(argumentCaptor.getValue().getLastFailedLogin());
+        Assertions.assertNotNull(argumentCaptor.getValue().getLastFailedLoginAt());
     }
 }
