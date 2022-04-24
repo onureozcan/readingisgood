@@ -32,7 +32,7 @@ public class UserAuthenticationFactoryTest {
                 () -> assertEquals("onureozcan@gmail.com", authentication.getPrincipal()),
                 () -> assertEquals("onureozcan@gmail.com", authentication.getDetails()),
                 () -> assertEquals("onur", authentication.getName()),
-                () -> assertEquals(Role.CUSTOMER.name(),
+                () -> assertEquals("ROLE_" + Role.CUSTOMER.name(),
                         authentication.getAuthorities()
                                 .stream()
                                 .map(GrantedAuthority::getAuthority)
