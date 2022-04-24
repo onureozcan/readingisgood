@@ -11,6 +11,8 @@ import com.example.readingisgood.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 public class AuthenticationService {
 
@@ -32,11 +34,14 @@ public class AuthenticationService {
             String hashedPassword = passwordUtil.hash(user.getPasswordSalt(), authenticationRequest.getPassword());
             String expectedHashedPassword = user.getPasswordHashed();
 
-            //if (hashedPassword.equals(expectedHashedPassword)) {
+            if (hashedPassword.equals(expectedHashedPassword)) {
                 return new AuthenticationResponse(jwtGenerator.generateJwt(
                         authenticationMapper.toPayload(user)
                 ));
-            //}
+            } else {
+                user.setLastFailedLogin(Instant.now());
+                userRepository.save(user);
+            }
         }
         throw new InvalidCredentialsException();
     }

@@ -8,6 +8,10 @@ public class UserRepository {
 
     public User findUserById(String email) {
         // TODO
-        return new User("onureozcan@gmail.com", "onureozcan@gmail.com","onur","CUSTOMER");
+        return null;
+    }
+
+    public void save(User user) {
+        // TODO
     }
 }

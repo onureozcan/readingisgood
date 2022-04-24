@@ -4,6 +4,10 @@ import com.example.readingisgood.enums.Role;
 import com.example.readingisgood.model.User;
 import com.example.readingisgood.pojo.auth.AuthenticationPayload;
 import com.example.readingisgood.pojo.auth.CustomAuthentication;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -15,6 +19,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class AuthenticationMapper {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public Authentication toAuthentication(AuthenticationPayload payload) {
         return new CustomAuthentication(
@@ -28,15 +35,11 @@ public class AuthenticationMapper {
 
     public Map<String, Object> toClaims(AuthenticationPayload payload) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", payload.getId());
-        claims.put("name", payload.getName());
-        claims.put("email", payload.getEmail());
-        claims.put("roles", "[" + payload.getRoles()
-                .stream()
-                .map(Enum::name)
-                .map(name -> "\"" + name + "\"")
-                .collect(Collectors.joining(",")) + "]" // TODO: poor solution
-        );
+        try {
+            claims.put("payload", objectMapper.writeValueAsString(payload));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         return claims;
     }
 

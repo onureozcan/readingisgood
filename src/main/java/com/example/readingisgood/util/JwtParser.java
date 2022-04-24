@@ -1,6 +1,7 @@
 package com.example.readingisgood.util;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -11,12 +12,12 @@ import static com.example.readingisgood.constant.JwtConstants.KEY;
 
 @Component
 public class JwtParser {
-    public String getPayload(String token) {
-        return Jwts.parser()
+
+    public DefaultClaims getPayload(String token) {
+        return (DefaultClaims) Jwts.parser()
                 .setSigningKey(KEY)
                 .requireIssuer(ISSUER)
                 .parse(token)
-                .getBody()
-                .toString();
+                .getBody();
     }
 }

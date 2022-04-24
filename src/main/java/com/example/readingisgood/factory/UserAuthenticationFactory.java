@@ -7,6 +7,7 @@ import com.example.readingisgood.pojo.auth.CustomAuthentication;
 import com.example.readingisgood.util.JwtParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -32,16 +33,18 @@ public class UserAuthenticationFactory {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.contains("Bearer ")) {
             String token = authHeader.replaceFirst("Bearer ", "");
-            String payload = jwtParser.getPayload(token);
+            DefaultClaims payload = jwtParser.getPayload(token);
             try {
-                AuthenticationPayload authenticationPayload = objectMapper.readValue(payload, AuthenticationPayload.class);
+                AuthenticationPayload authenticationPayload = objectMapper.readValue(
+                        payload.get("payload", String.class), AuthenticationPayload.class
+                );
                 return authenticationMapper.toAuthentication(authenticationPayload);
             } catch (JsonProcessingException exception) {
                 throw new InvalidAuthenticationPayloadException(exception);
             }
         }
         return new CustomAuthentication(
-             "0","visitor", "visitor", List.of()
+                "0", "visitor", "visitor", List.of()
         );
     }
 }
