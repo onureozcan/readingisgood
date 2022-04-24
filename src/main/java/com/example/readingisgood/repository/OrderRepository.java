@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class OrderRepository {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM").withZone(ZoneId.systemDefault());
 
     public Optional<Order> findOrderById(String id) {
         Query query = new Query();
