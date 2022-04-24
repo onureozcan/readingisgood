@@ -7,6 +7,8 @@ import com.example.readingisgood.mapper.UserMapper;
 import com.example.readingisgood.model.User;
 import com.example.readingisgood.repository.UserRepository;
 import com.example.readingisgood.util.PasswordUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,19 +27,33 @@ public class UserService {
     @Autowired
     private PasswordUtil passwordUtil;
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class.getName());
+
     public User createCustomer(CreateUserRequest request) {
+        return saveUser(request, Role.CUSTOMER);
+    }
+
+    public User createManager(CreateUserRequest request) {
+        return saveUser(request, Role.MANAGER);
+    }
+
+    private User saveUser(CreateUserRequest request, Role role) {
         String email = request.getEmail();
 
         if (userRepository.findUserById(request.getEmail()).isPresent()) {
             throw new UserAlreadyPresentException(email);
         }
 
-        User user = userMapper.toCustomer(request);
+        User user = userMapper.toUser(request, role);
         user.setPasswordSalt(passwordUtil.generateSalt(SALT_SIZE));
+        String password = passwordUtil.generateFirstTimePassword(FIRST_TIME_PASSWORD_SIZE);
+
+        log.debug("Created a first time password: " + password);
+
         user.setPasswordHashed(
                 passwordUtil.hash(
                         user.getPasswordSalt(),
-                        passwordUtil.generateFirstTimePassword(FIRST_TIME_PASSWORD_SIZE)
+                        password
                 )
         );
         return userRepository.save(user);
