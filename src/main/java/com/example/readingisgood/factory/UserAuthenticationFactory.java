@@ -29,7 +29,6 @@ public class UserAuthenticationFactory {
     private AuthenticationMapper authenticationMapper;
 
     public Authentication getAuthentication(HttpServletRequest request) {
-
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader != null && authHeader.contains("Bearer ")) {
             String token = authHeader.replaceFirst("Bearer ", "");
@@ -43,8 +42,6 @@ public class UserAuthenticationFactory {
                 throw new InvalidAuthenticationPayloadException(exception);
             }
         }
-        return new CustomAuthentication(
-                "0", "visitor", "visitor", List.of()
-        );
+        return null;
     }
 }
