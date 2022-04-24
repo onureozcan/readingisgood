@@ -1,9 +1,14 @@
 package com.example.readingisgood.repository;
 
+import com.example.readingisgood.TestMongoDb;
 import com.example.readingisgood.model.User;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,12 +18,22 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
+    @BeforeAll
+    public static void beforeAll() throws IOException {
+        TestMongoDb.start();
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        TestMongoDb.stop();
+    }
+
     @Test
     public void testCreateNewUser() {
         User newUser = getNewUser();
         userRepository.save(newUser);
 
-        User found = userRepository.findUserById("user@user.com");
+        User found = userRepository.findUserById("user@user.com").orElseThrow();
         assertUser(newUser, found);
     }
 
@@ -31,7 +46,7 @@ public class UserRepositoryTest {
         newUser.setName("Updated");
         userRepository.save(newUser);
 
-        User found = userRepository.findUserById("user@user.com");
+        User found = userRepository.findUserById("user@user.com").orElseThrow();
         assertUser(newUser, found);
     }
 

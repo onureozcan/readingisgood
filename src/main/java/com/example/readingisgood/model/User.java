@@ -11,7 +11,8 @@ public class User {
     private String passwordSalt;
 
     private Instant createdAt;
-    private Instant lastFailedLogin;
+    private Instant updatedAt;
+    private Instant lastFailedLoginAt;
 
     private String role;
 
@@ -69,16 +70,24 @@ public class User {
         return createdAt;
     }
 
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Instant getLastFailedLogin() {
-        return lastFailedLogin;
+    public Instant getLastFailedLoginAt() {
+        return lastFailedLoginAt;
     }
 
-    public void setLastFailedLogin(Instant lastFailedLogin) {
-        this.lastFailedLogin = lastFailedLogin;
+    public void setLastFailedLoginAt(Instant lastFailedLoginAt) {
+        this.lastFailedLoginAt = lastFailedLoginAt;
     }
 
     public String getRole() {
