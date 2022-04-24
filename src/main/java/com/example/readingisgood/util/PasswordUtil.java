@@ -8,6 +8,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public class PasswordUtil {
@@ -20,7 +23,7 @@ public class PasswordUtil {
     }
 
     public String generateSalt(int size) {
-        byte[] array = new byte[7]; // length is bounded by 7
+        byte[] array = new byte[size];
         random.nextBytes(array);
         return Base64.getEncoder().encodeToString(array);
     }
@@ -29,5 +32,12 @@ public class PasswordUtil {
         return Base64.getEncoder().encodeToString(
                 messageDigest.digest((password + salt).getBytes(StandardCharsets.UTF_8))
         );
+    }
+
+    public String generateFirstTimePassword(int size) {
+        Random random = new Random();
+        return IntStream.range(1, size)
+                .mapToObj(it -> "" + (random.nextInt(9)))
+                .collect(Collectors.joining(","));
     }
 }
