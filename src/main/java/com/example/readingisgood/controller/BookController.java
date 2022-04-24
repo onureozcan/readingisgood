@@ -1,6 +1,7 @@
 package com.example.readingisgood.controller;
 
 import com.example.readingisgood.dto.request.CreateBookRequest;
+import com.example.readingisgood.dto.request.StockUpdateRequest;
 import com.example.readingisgood.model.Book;
 import com.example.readingisgood.service.book.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,5 +22,11 @@ public class BookController {
     @PreAuthorize("hasRole('MANAGER')")
     public Book createBook(@RequestBody CreateBookRequest createBookRequest) {
         return bookService.createBook(createBookRequest);
+    }
+
+    @PostMapping("stock-update")
+    @PreAuthorize("hasRole('MANAGER')")
+    public void addToStock(@RequestBody StockUpdateRequest stockUpdateRequest) {
+        bookService.updateStock(stockUpdateRequest);
     }
 }
