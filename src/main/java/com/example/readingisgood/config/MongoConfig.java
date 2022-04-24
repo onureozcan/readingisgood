@@ -23,7 +23,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     @Override
     public MongoClient mongoClient() {
         ConnectionString connectionString = new
-                ConnectionString("mongodb://usr:pwd@localhost:27017/" + getDatabaseName());
+                ConnectionString("mongodb://localhost:27017/" + getDatabaseName());
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();

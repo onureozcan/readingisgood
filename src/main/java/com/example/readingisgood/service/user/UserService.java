@@ -10,6 +10,7 @@ import com.example.readingisgood.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import static com.example.readingisgood.constant.PasswordConstants.FIRST_TIME_PASSWORD_SIZE;
@@ -30,14 +31,18 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class.getName());
 
     public User createCustomer(CreateUserRequest request) {
-        return saveUser(request, Role.CUSTOMER);
+        return saveUser(request, Role.CUSTOMER, null);
     }
 
     public User createManager(CreateUserRequest request) {
-        return saveUser(request, Role.MANAGER);
+        return saveUser(request, Role.MANAGER, null);
     }
 
-    private User saveUser(CreateUserRequest request, Role role) {
+    public User createRootAdmin(CreateUserRequest request, String password) {
+        return saveUser(request, Role.MANAGER, password);
+    }
+
+    private User saveUser(CreateUserRequest request, Role role, @Nullable String explicitPassword) {
         String email = request.getEmail();
 
         if (userRepository.findUserById(request.getEmail()).isPresent()) {
@@ -46,9 +51,11 @@ public class UserService {
 
         User user = userMapper.toUser(request, role);
         user.setPasswordSalt(passwordUtil.generateSalt(SALT_SIZE));
-        String password = passwordUtil.generateFirstTimePassword(FIRST_TIME_PASSWORD_SIZE);
+        String password = explicitPassword == null ?
+                passwordUtil.generateFirstTimePassword(FIRST_TIME_PASSWORD_SIZE) : explicitPassword;
 
-        log.debug("Created a first time password: " + password);
+        // Only to be able to see
+        log.info("Created a first time password: " + password);
 
         user.setPasswordHashed(
                 passwordUtil.hash(

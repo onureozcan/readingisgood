@@ -28,6 +28,7 @@ public class AuthenticationMapper {
                 payload.getId(), payload.getName(), payload.getEmail(),
                 payload.getRoles().stream()
                         .map(Enum::name)
+                        .map(it -> "ROLE_" + it)
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList())
         );
