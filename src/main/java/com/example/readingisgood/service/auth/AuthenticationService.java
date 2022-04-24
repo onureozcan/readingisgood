@@ -9,6 +9,8 @@ import com.example.readingisgood.repository.UserRepository;
 import com.example.readingisgood.util.JwtGenerator;
 import com.example.readingisgood.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -46,5 +48,9 @@ public class AuthenticationService {
             }
         }
         throw new InvalidCredentialsException();
+    }
+
+    public Authentication getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 }
