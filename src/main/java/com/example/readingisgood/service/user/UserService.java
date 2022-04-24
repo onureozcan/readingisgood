@@ -30,19 +30,19 @@ public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class.getName());
 
-    public User createCustomer(CreateUserRequest request) {
-        return saveUser(request, Role.CUSTOMER, null);
+    public void createCustomer(CreateUserRequest request) {
+        saveUser(request, Role.CUSTOMER, null);
     }
 
-    public User createManager(CreateUserRequest request) {
-        return saveUser(request, Role.MANAGER, null);
+    public void createManager(CreateUserRequest request) {
+        saveUser(request, Role.MANAGER, null);
     }
 
-    public User createRootAdmin(CreateUserRequest request, String password) {
-        return saveUser(request, Role.MANAGER, password);
+    public void createRootAdmin(CreateUserRequest request, String password) {
+        saveUser(request, Role.MANAGER, password);
     }
 
-    private User saveUser(CreateUserRequest request, Role role, @Nullable String explicitPassword) {
+    private void saveUser(CreateUserRequest request, Role role, @Nullable String explicitPassword) {
         String email = request.getEmail();
 
         if (userRepository.findUserById(request.getEmail()).isPresent()) {
@@ -63,6 +63,6 @@ public class UserService {
                         password
                 )
         );
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }

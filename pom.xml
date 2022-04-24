@@ -16,6 +16,9 @@
 	<properties>
 		<java.version>11</java.version>
 		<jjwt.version>0.9.1</jjwt.version>
+		<spring-cloud-aws-messaging.version>2.2.6.RELEASE</spring-cloud-aws-messaging.version>
+		<spring-jms.version>4.3.3.RELEASE</spring-jms.version>
+		<amazon-sqs-java-messaging-lib.version>1.0.8</amazon-sqs-java-messaging-lib.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -33,7 +36,20 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-aws-messaging</artifactId>
-			<version>2.2.6.RELEASE</version>
+			<version>${spring-cloud-aws-messaging.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+			<version>${spring-jms.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>amazon-sqs-java-messaging-lib</artifactId>
+			<version>${amazon-sqs-java-messaging-lib.version}</version>
+			<type>jar</type>
 		</dependency>
 
 		<dependency>

@@ -3,6 +3,7 @@ package com.example.readingisgood.service.book;
 import com.example.readingisgood.dto.request.CreateBookRequest;
 import com.example.readingisgood.dto.request.StockUpdateRequest;
 import com.example.readingisgood.exception.BookAlreadyPresentException;
+import com.example.readingisgood.exception.NegativeStockException;
 import com.example.readingisgood.exception.NoSuchBookException;
 import com.example.readingisgood.mapper.BookMapper;
 import com.example.readingisgood.model.Book;
@@ -13,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class BookService {
@@ -50,5 +53,22 @@ public class BookService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void handleStockUpdate(StockUpdateRequest request) {
+        Optional<Book> bookOptional = bookRepository.findById(request.getIsbn());
+        if (bookOptional.isEmpty()) {
+            throw new NoSuchBookException(request.getIsbn());
+        }
+
+        Book book = bookOptional.get();
+
+        int finalCount = book.getCount() + request.getCount();
+        if (finalCount < 0) {
+            throw new NegativeStockException(request.getIsbn(), request.getCount(), book.getCount());
+        }
+
+        book.setCount(finalCount);
+        bookRepository.save(book);
     }
 }
