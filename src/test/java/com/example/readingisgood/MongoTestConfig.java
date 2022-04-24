@@ -1,4 +1,4 @@
-package com.example.readingisgood.config;
+package com.example.readingisgood;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -12,8 +12,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Configuration
-@Profile("!test")
-public class MongoConfig extends AbstractMongoClientConfiguration {
+@Profile("test")
+public class MongoTestConfig extends AbstractMongoClientConfiguration {
 
     @Override
     protected String getDatabaseName() {
@@ -23,7 +23,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
     @Override
     public MongoClient mongoClient() {
         ConnectionString connectionString = new
-                ConnectionString("mongodb://localhost:27017/" + getDatabaseName());
+                ConnectionString("mongodb://localhost:27017");
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();
@@ -36,3 +36,4 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
         return Collections.singleton("com.example.readingisgood");
     }
 }
+

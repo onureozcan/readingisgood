@@ -9,6 +9,8 @@ import com.example.readingisgood.repository.UserRepository;
 import com.example.readingisgood.util.PasswordUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +42,18 @@ public class UserServiceTest {
         Mockito.when(passwordUtil.hash(eq("salt"), eq("password"))).thenReturn("hashed");
     }
 
-    @Test
-    public void shouldCreateNewCustomer() {
+    @ParameterizedTest
+    @CsvSource({"user@user.com, false", "manager@manager.com, true"})
+    public void shouldCreateNewUser(String email, boolean isManager) {
 
-        String email = "user@user.com";
         Mockito.when(userRepository.findUserById(eq(email))).thenReturn(Optional.empty());
 
         CreateUserRequest request = new CreateUserRequest(email, "user");
-        userService.createCustomer(request);
-
+        if (isManager) {
+            userService.createManager(request);
+        } else {
+            userService.createCustomer(request);
+        }
         ArgumentCaptor<User> argumentCaptor = ArgumentCaptor.forClass(User.class);
         Mockito.verify(userRepository, times(1)).save(argumentCaptor.capture());
 
@@ -59,7 +64,7 @@ public class UserServiceTest {
                 () -> assertEquals(email, savedUser.getEmail()),
                 () -> assertEquals("hashed", savedUser.getPasswordHashed()),
                 () -> assertEquals("salt", savedUser.getPasswordSalt()),
-                () -> assertEquals("CUSTOMER", savedUser.getRole())
+                () -> assertEquals(isManager ? "MANAGER" : "CUSTOMER", savedUser.getRole())
         );
     }
 
