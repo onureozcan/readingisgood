@@ -6,6 +6,7 @@ import com.example.readingisgood.dto.request.StockUpdateRequest;
 import com.example.readingisgood.enums.OrderStatus;
 import com.example.readingisgood.exception.NegativeStockException;
 import com.example.readingisgood.exception.NoSuchOrderException;
+import com.example.readingisgood.exception.OrderCountNegativeException;
 import com.example.readingisgood.model.Order;
 import com.example.readingisgood.repository.BookRepository;
 import com.example.readingisgood.repository.OrderRepository;
@@ -51,9 +52,15 @@ public class OrderService {
         order.setBookId(request.getBookIsbn());
         order.setUserId(authenticationService.getCurrentUser().getPrincipal().toString());
         order.setCount(request.getCount());
+        if (order.getCount() < 0) {
+            throw new OrderCountNegativeException();
+        }
+
         order.setStatus(OrderStatus.PLACED);
         order.setBook(bookService.getBookById(request.getBookIsbn()));
         order.setTotalPaid(request.getCount() * order.getBook().getPrice());
+        orderRepository.save(order);
+
         try {
             messageProducer.produce(
                     orderPlacedQueueName,
@@ -63,7 +70,7 @@ public class OrderService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        return orderRepository.save(order);
+        return order;
     }
 
     public void handle(OrderProcessRequest request) {

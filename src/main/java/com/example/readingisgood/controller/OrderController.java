@@ -5,10 +5,7 @@ import com.example.readingisgood.model.Order;
 import com.example.readingisgood.service.order.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
@@ -25,19 +22,19 @@ public class OrderController {
         return orderService.createOrder(request);
     }
 
-    @RequestMapping
-    public Order getById(String id) {
+    @GetMapping
+    public Order getById(@RequestParam String id) {
         return orderService.getById(id);
     }
 
-    @RequestMapping("/list-all")
+    @GetMapping("/list-all")
     @PreAuthorize("hasRole('MANAGER')")
-    public List<Order> listAll(Instant from, Instant to) {
+    public List<Order> listAll(@RequestParam Instant from, @RequestParam Instant to) {
         return orderService.list(from, to);
     }
 
-    @RequestMapping("/list")
-    public List<Order> list(Instant from, Instant to) {
+    @GetMapping("/list")
+    public List<Order> list(@RequestParam Instant from, @RequestParam Instant to) {
         return orderService.list(from, to);
     }
 }

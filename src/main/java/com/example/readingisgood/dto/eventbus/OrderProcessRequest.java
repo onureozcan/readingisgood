@@ -4,6 +4,9 @@ public class OrderProcessRequest {
 
     private String orderId;
 
+    public OrderProcessRequest() {
+    }
+
     public OrderProcessRequest(String orderId) {
         this.orderId = orderId;
     }
