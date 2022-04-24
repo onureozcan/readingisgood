@@ -1,0 +1,23 @@
+package com.example.readingisgood.controller;
+
+import com.example.readingisgood.dto.request.CreateBookRequest;
+import com.example.readingisgood.model.Book;
+import com.example.readingisgood.service.book.BookService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/private/book")
+public class BookController {
+
+    @Autowired
+    private BookService bookService;
+
+    @PostMapping
+    public Book createBook(@RequestBody CreateBookRequest createBookRequest) {
+        return bookService.createBook(createBookRequest);
+    }
+}

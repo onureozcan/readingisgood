@@ -37,7 +37,7 @@ public class BookRepositoryTest {
         Book newBook = getNewBook();
         bookRepository.save(newBook);
 
-        Book found = bookRepository.findByName("test book").orElseThrow();
+        Book found = bookRepository.findById(newBook.getId()).orElseThrow();
         assertBook(newBook, found);
     }
 
@@ -52,12 +52,13 @@ public class BookRepositoryTest {
 
         bookRepository.save(newBook);
 
-        Book found = bookRepository.findByName("Updated").orElseThrow();
+        Book found = bookRepository.findById(newBook.getId()).orElseThrow();
         assertBook(newBook, found);
     }
 
     private Book getNewBook() {
         Book book = new Book();
+        book.setId("test isbn");
         book.setName("test book");
         book.setAuthor("test author");
         book.setCount(100);

@@ -3,6 +3,7 @@ package com.example.readingisgood.service.user;
 import com.example.readingisgood.dto.request.CreateUserRequest;
 import com.example.readingisgood.enums.Role;
 import com.example.readingisgood.exception.UserAlreadyPresentException;
+import com.example.readingisgood.mapper.UserMapper;
 import com.example.readingisgood.model.User;
 import com.example.readingisgood.repository.UserRepository;
 import com.example.readingisgood.util.PasswordUtil;
@@ -19,16 +20,19 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private PasswordUtil passwordUtil;
 
-    public User createCustomer(CreateUserRequest createUserRequest) {
-        String email = createUserRequest.getEmail();
+    public User createCustomer(CreateUserRequest request) {
+        String email = request.getEmail();
 
-        if (userRepository.findUserById(createUserRequest.getEmail()).isPresent()) {
+        if (userRepository.findUserById(request.getEmail()).isPresent()) {
             throw new UserAlreadyPresentException(email);
         }
 
-        User user = new User(email, email, createUserRequest.getName(), Role.CUSTOMER.name());
+        User user = userMapper.toCustomer(request);
         user.setPasswordSalt(passwordUtil.generateSalt(SALT_SIZE));
         user.setPasswordHashed(
                 passwordUtil.hash(

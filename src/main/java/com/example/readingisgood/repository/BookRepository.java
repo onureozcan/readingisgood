@@ -3,6 +3,7 @@ package com.example.readingisgood.repository;
 import com.example.readingisgood.model.Book;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -25,9 +26,9 @@ public class BookRepository {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public Optional<Book> findByName(String name) {
+    public Optional<Book> findById(String id) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("name").is(name));
+        query.addCriteria(Criteria.where("_id").is(id));
 
         Optional<Document> documentOptional = mongoTemplate.find(query, Document.class, COLLECTION)
                 .stream().findFirst();
@@ -67,7 +68,6 @@ public class BookRepository {
 
         update.set("_id", book.getId());
         mongoTemplate.upsert(query, update, Book.class, COLLECTION);
-
         return book;
     }
 }
