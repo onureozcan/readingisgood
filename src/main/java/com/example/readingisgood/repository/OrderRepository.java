@@ -32,7 +32,7 @@ public class OrderRepository {
     private static final String COLLECTION = "order";
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;
