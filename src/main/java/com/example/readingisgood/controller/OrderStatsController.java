@@ -2,6 +2,7 @@ package com.example.readingisgood.controller;
 
 import com.example.readingisgood.dto.response.OrderAggregationResult;
 import com.example.readingisgood.repository.OrderRepository;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ public class OrderStatsController {
     private OrderRepository orderRepository;
 
     @GetMapping
+    @ApiOperation("Get month by month aggregated order statistics in a date range. Managers only")
     @PreAuthorize("hasRole('MANAGER')")
     public List<OrderAggregationResult> get(
             @RequestParam Instant from, @RequestParam Instant to
