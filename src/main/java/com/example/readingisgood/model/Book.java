@@ -11,6 +11,7 @@ public class Book {
     private Instant createdAt;
     private Instant updatedAt;
     private int count;
+    private double price;
 
     public String getId() {
         return id;
@@ -26,6 +27,14 @@ public class Book {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public String getAuthor() {

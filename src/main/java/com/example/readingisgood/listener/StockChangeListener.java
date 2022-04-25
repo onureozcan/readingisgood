@@ -1,9 +1,11 @@
 package com.example.readingisgood.listener;
 
 import com.example.readingisgood.dto.eventbus.EventPayloadHolder;
+import com.example.readingisgood.dto.eventbus.OrderProcessRequest;
 import com.example.readingisgood.dto.request.StockUpdateRequest;
 import com.example.readingisgood.exception.NegativeStockException;
 import com.example.readingisgood.service.book.BookService;
+import com.example.readingisgood.service.order.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -26,6 +28,9 @@ public class StockChangeListener {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private OrderService orderService;
+
     @Value("${queue.stock-updated}")
     private String stockUpdatedQueueName;
 
@@ -47,6 +52,10 @@ public class StockChangeListener {
             } catch (NegativeStockException exception) {
                 log.error("Stock update request denied!", exception);
             }
+        } else {
+            orderService.handle(
+                    objectMapper.readValue(payloadHolder.getPayload(), OrderProcessRequest.class)
+            );
         }
         message.acknowledge();
     }

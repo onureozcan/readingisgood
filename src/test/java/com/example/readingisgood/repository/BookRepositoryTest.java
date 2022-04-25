@@ -61,6 +61,7 @@ public class BookRepositoryTest {
         book.setId("test isbn");
         book.setName("test book");
         book.setAuthor("test author");
+        book.setPrice(10.0);
         book.setCount(100);
         book.setPublishedAt(Instant.now().minus(Duration.ofDays(200)));
         return book;
@@ -73,7 +74,8 @@ public class BookRepositoryTest {
                 () -> assertEquals(newBook.getId(), found.getId()),
                 () -> assertEquals(newBook.getAuthor(), found.getAuthor()),
                 () -> assertEquals(newBook.getPublishedAt(), found.getPublishedAt()),
-                () -> assertEquals(newBook.getCount(), found.getCount())
+                () -> assertEquals(newBook.getCount(), found.getCount()),
+                () -> assertEquals(newBook.getPrice(), found.getPrice())
         );
     }
 }

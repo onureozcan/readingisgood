@@ -7,6 +7,7 @@ public class CreateBookRequest {
     private String isbn;
     private String name;
     private String author;
+    private double price;
     private Instant publishDate;
 
     public String getIsbn() {
@@ -27,6 +28,14 @@ public class CreateBookRequest {
 
     public String getAuthor() {
         return author;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public void setAuthor(String author) {

@@ -13,6 +13,7 @@ public class BookMapper {
         book.setName(request.getName());
         book.setAuthor(request.getAuthor());
         book.setPublishedAt(request.getPublishDate());
+        book.setPrice(request.getPrice());
         return book;
     }
 }

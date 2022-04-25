@@ -35,6 +35,15 @@ public class BookService {
     @Value("${queue.stock-updated}")
     private String stockUpdatedQueueName;
 
+    public Book getBookById(String id) {
+        Optional<Book> bookOptional = bookRepository.findById(id);
+        if (bookOptional.isEmpty()) {
+            throw new NoSuchBookException(id);
+        }
+
+        return bookOptional.get();
+    }
+
     public Book createBook(CreateBookRequest request) {
         if (bookRepository.findById(request.getIsbn()).isPresent()) {
             throw new BookAlreadyPresentException(request.getIsbn());
