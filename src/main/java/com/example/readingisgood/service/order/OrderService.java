@@ -86,6 +86,7 @@ public class OrderService {
         } catch (NegativeStockException e) {
             order.setStatus(OrderStatus.REJECTED);
         }
+        orderRepository.save(order);
     }
 
     public Order getById(String id) {

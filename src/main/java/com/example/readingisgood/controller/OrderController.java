@@ -34,7 +34,7 @@ public class OrderController {
     @ApiOperation("List all the orders in a date range. Managers only")
     @PreAuthorize("hasRole('MANAGER')")
     public List<Order> listAll(@RequestParam Instant from, @RequestParam Instant to) {
-        return orderService.list(from, to);
+        return orderService.listOrdersOfCurrentUser(from, to);
     }
 
     @GetMapping("/list")
